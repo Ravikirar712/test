@@ -3,7 +3,9 @@ var bg, bgImage;
 var brickGroup, brickImage;
 var coinsGroup, coinImage;
 var coinScore=0;
-
+var obs1, obs2, obs3;
+var mushimg, turimg;
+var keyimg;
 function preload(){
   mario_running =  loadAnimation("images/mar1.png","images/mar2.png","images/mar3.png",
   "images/mar4.png","images/mar5.png","images/mar6.png","images/mar7.png");
@@ -11,7 +13,10 @@ function preload(){
   brickImage = loadImage("images/brick.png");
   coinSound = loadSound("sounds/coinSound.mp3");
   coinImage = loadAnimation("images/con1.png","images/con2.png","images/con3.png","images/con4.png","images/con5.png","images/con6.png");
-  
+  mushObstacleImage= loadAnimation("/images/mush1.png","/images/mush2.png","/images/mush3.png","/images/mush4.png","/images/mush5.png","/images/mush6.png");
+  turtleObstacleImage=loadAnimation ("images/tur1.png","images/tur2.png","images/tur3.png","images/tur4.png","images/tur5.png");
+  dieSound = loadSound("sounds/dieSound.mp3");
+  keyimg=loadAnimation("images/keyobs1.png","images/keyobs2.png","images/keyobs3.png","images/keyobs4.png","images/keyobs5.png");
 }
 
 function setup() {
@@ -29,6 +34,7 @@ function setup() {
   ground.visible = false;
   bricksGroup = new Group();
   coinsGroup = new Group();
+  obstaclesGroup = new Group();
 }
 
 function draw() {
@@ -45,9 +51,9 @@ function draw() {
   }
 
   if(keyDown("space") ) {
-    mario.velocityY = -16;
+    mario.velocityY = -20;
   }
-  mario.velocityY = mario.velocityY + 0.5;
+  mario.velocityY = mario.velocityY +1;
   generateBricks();
   for(var i = 0 ; i< (bricksGroup).length ;i++){
     var temp = (bricksGroup).get(i) ;
@@ -70,7 +76,8 @@ function draw() {
         }
           
       }
-  
+  generateObs();
+
   mario.collide(ground);
 
   drawSprites();
@@ -105,3 +112,27 @@ function generateCoins() {
     coinsGroup.add(coin);
   }
 }
+
+function generateObs() {
+  if(frameCount % 100 === 0) {
+    var obstacle = createSprite(1200,535,10,40);
+    obstacle.velocityX = -4;
+    obstacle.scale=0.2;
+    var rand= Math.round(random(1,3));
+    switch(rand){
+    case 1:
+        obstacle.addAnimation("mush",mushObstacleImage);
+        break;
+    case 2:
+      obstacle.addAnimation("turtle", turtleObstacleImage);
+        break;
+    case 3:
+      obstacle.addAnimation("keyobs", keyimg);
+    default:
+        break;    
+    }
+    obstacle.lifetime = 300;
+    obstaclesGroup.add(obstacle);
+  }
+}
+
